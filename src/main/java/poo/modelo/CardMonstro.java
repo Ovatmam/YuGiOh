@@ -1,14 +1,12 @@
-package poo;
+package poo.modelo;
 
 public class CardMonstro extends Card{
 	
 	private int atk;
 	private int def;
-	private boolean defMode;
 
 	public CardMonstro(String anId, String anImageId) {
 		super(anId, anImageId);
-		defMode = false;
 	}
 
 	public boolean setAtk(int atk) {
@@ -33,13 +31,5 @@ public class CardMonstro extends Card{
 
 	public int getDefense() {
 		return def;
-	}
-
-	public void changeMode() {
-		defMode = !defMode;
-	}
-
-	public boolean isDefending() {
-		return defMode;
 	}
 }

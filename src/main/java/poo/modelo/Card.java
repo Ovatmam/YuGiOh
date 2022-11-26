@@ -1,4 +1,4 @@
-package poo;
+package poo.modelo;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -8,17 +8,27 @@ public class Card {
 	private String imageId;
 	private String name;
 	private boolean faceUp;
+	private boolean defMode;
 	private final PropertyChangeSupport pcs;
 
 	public Card(String anId, String anImageId) {
 		id = anId;
 		imageId = anImageId;
 		faceUp = true;
+		defMode = false;
 		pcs = new PropertyChangeSupport(this);
 	}
 
 	public String getId() {
 		return id;
+	}
+
+	public String getDefImageId() {
+		return imageId + "Def";
+	}
+
+	public String getImageId() {
+		return imageId;
 	}
 
 	public boolean setName(String name) {
@@ -33,10 +43,6 @@ public class Card {
 		return name;
 	}
 
-	public String getImageId() {
-		return imageId;
-	}
-
 	public boolean isFacedUp() {
 		return faceUp;
 	}
@@ -46,6 +52,14 @@ public class Card {
 		faceUp = !faceUp;
 		pcs.firePropertyChange("facedUp", old, faceUp);
 	}
+	
+	public void changeMode() {
+		defMode = !defMode;
+	}
+
+	public boolean isDefending() {
+		return defMode;
+	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		pcs.addPropertyChangeListener(listener);
@@ -53,5 +67,9 @@ public class Card {
 
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 		pcs.removePropertyChangeListener(listener);
+	}
+
+	public String toString() {
+		return String.format("Card(%s, %s, %s)",id, name, faceUp);
 	}
 }

@@ -1,14 +1,19 @@
-package poo;
+package poo.modelo;
 
 import java.util.LinkedList;
 import java.util.List;
 
+//import poo.modelo.GameEvent.Action;
+//import poo.modelo.GameEvent.Target;
+
 public class Game {
 	private static Game game = new Game();
-	private int ptsJ1, ptsJ2;
+	private int vidasJ1, vidasJ2;
 	private CardDeck deckJ1, deckJ2;
+	private CardDeck mesaJ1, mesaJ2;
 	private int player;
 	private int jogadas;
+	private int turnos;
 	private List<GameListener> observers;
 	
 	public static Game getInstance() {
@@ -16,28 +21,40 @@ public class Game {
 	}
 
 	private Game() {
-		ptsJ1 = 1;
-		ptsJ2 = 1;
-		deckJ1 = new CardDeck();
-		deckJ2 = new CardDeck();
+		vidasJ1 = 1;
+		vidasJ2 = 1;
+		turnos = 1;
+		deckJ1 = new CardDeck(CardDeck.NCARDS);
+		deckJ2 = new CardDeck(CardDeck.NCARDS);
+		mesaJ1 = new CardDeck(0);
+		mesaJ2 = new CardDeck(0);
 		player = 1;
 		jogadas = CardDeck.NCARDS;
 		observers = new LinkedList<>();
 	}
 
-	private void nextPlayer() {
+	public void nextPlayer() {
+		turnos++;
 		player++;
 		if (player == 4) {
 			player = 1;
 		}
 	}
 
-	public int getPtsJ1() {
-		return ptsJ1;
+	public int getPlayer() {
+		return player;
 	}
 
-	public int getPtsJ2() {
-		return ptsJ2;
+	public int getTurnos() {
+		return turnos;
+	}
+
+	public int getVidasJ1() {
+		return vidasJ1;
+	}
+
+	public int getVidasJ2() {
+		return vidasJ2;
 	}
 
 	public CardDeck getDeckJ1() {
@@ -46,6 +63,14 @@ public class Game {
 
 	public CardDeck getDeckJ2() {
 		return deckJ2;
+	}
+
+	public CardDeck getMesaJ1() {
+		return mesaJ1;
+	}
+
+	public CardDeck getMesaJ2() {
+		return mesaJ2;
 	}
 
 	public void play(CardDeck deckAcionado) {
@@ -58,15 +83,14 @@ public class Game {
 			return;
 		}
 		if (deckAcionado == deckJ1) {
-			if (player != 1) {
+			if (player != 1) {	
 				gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVPLAY, "2");
 				for (var observer : observers) {
 					observer.notify(gameEvent);
 				}
 			} else {
 				// Vira a carta
-				deckJ1.getSelectedCard().flip();
-				deckJ1.getSelectedCard().flip();
+				//deckJ1.getSelectedCard().flip();
 				// Proximo jogador
 				nextPlayer();
 			}
@@ -78,15 +102,14 @@ public class Game {
 				}
 			} else {
 				// Vira a carta
-				deckJ2.getSelectedCard().flip();
-				deckJ2.getSelectedCard().flip();
+				//deckJ2.getSelectedCard().flip();
+				CardMonstro CardJ1 = new CardMonstro(deckJ1.getSelectedCard().getId(), deckJ1.getSelectedCard().getImageId());
+				CardMonstro CardJ2 = new CardMonstro(deckJ2.getSelectedCard().getId(), deckJ2.getSelectedCard().getImageId());
 				// Verifica quem ganhou a rodada
-				CardMonstro c1 = (CardMonstro) deckJ1.getSelectedCard();
-				CardMonstro c2 = (CardMonstro) deckJ2.getSelectedCard();
-				if (c1.getAtk() > c2.getAtk()) {
-					ptsJ1++;
-				} else if (c1.getAtk() < c2.getAtk()) {
-					ptsJ2++;
+				if (CardJ1.getAtk() > CardJ2.getAtk()) {
+					vidasJ1++;
+				} else if (CardJ1.getAtk() < CardJ2.getAtk()) {
+					vidasJ2++;
 				}
 				for (var observer : observers) {
 					observer.notify(gameEvent);
@@ -96,24 +119,14 @@ public class Game {
 			}
 		}
 	}
-	/*
+
+
 	public void drawCards() {
-		GameEvent gameEvent = null;
-		switch (player) {
-			case 1:
-				deckJ1.drawCard();
-				break;
-			case 2:
-				deckJ2.drawCard();
-				break;
-			default:
-				return;
-		}
-		gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.UPDATE, "");
-		for (var observer : observers) {
-			observer.notify(gameEvent);
-		}
-	}*/
+		if(player == 2)
+			deckJ2.drawCard();
+		if(player == 1)
+			deckJ1.drawCard();
+	}
 
 	// Acionada pelo botao de limpar
 	public void removeSelected() {
@@ -128,7 +141,11 @@ public class Game {
 				observer.notify(gameEvent);
 			}
 		}
+		
+		mesaJ1.addCard( deckJ1.getSelectedCard() );
 		deckJ1.removeSel();
+		
+		mesaJ2.addCard( deckJ2.getSelectedCard() );
 		deckJ2.removeSel();
 		nextPlayer();
 	}

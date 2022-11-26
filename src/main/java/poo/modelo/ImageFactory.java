@@ -1,4 +1,4 @@
-package poo;
+package poo.modelo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,16 +22,28 @@ public class ImageFactory {
 		switch (imgId) {
 		case "img1":
 			return ("/imagens/Um.png");
+		case "img1Def":
+			return ("/imagens/UmDef.png");
 		case "img2":
 			return ("/imagens/Dois.png");
+		case "img2Def":
+			return ("/imagens/DoisDef.png");
 		case "img3":
 			return ("/imagens/Tres.png");
+		case "img3Def":
+			return ("/imagens/TresDef.png");
 		case "img4":
 			return ("/imagens/Quatro.png");
+		case "img4Def":
+			return ("/imagens/QuatroDef.png");
 		case "img5":
 			return ("/imagens/Cinco.png");
+		case "img5Def":
+			return ("/imagens/CincoDef.png");
 		case "img6":
 			return ("/imagens/Seis.png");
+		case "img6Def":
+			return ("/imagens/SeisDef.png");
 		case "img7":
 			return ("/imagens/Sete.png");
 		case "img8":
@@ -47,11 +59,13 @@ public class ImageFactory {
 		}
 	}
 
+
 	public ImageView createImage(String imgId) {
 		Image img = images.get(imgId);
+		
 		if (img == null) {
 //			img = new Image(id2File(imgId));
-			img = new Image(getClass().getResourceAsStream(id2File(imgId)));
+			img = new Image(getClass().getResourceAsStream(id2File(imgId)),300,150,true,true);
 			images.put(imgId, img);
 		}
 

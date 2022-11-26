@@ -1,4 +1,4 @@
-package poo;
+package poo.modelo;
 
 import java.util.EventObject;
 
@@ -10,7 +10,7 @@ public class GameEvent extends EventObject {
 	};
 
 	public enum Action {
-		INVPLAY, MUSTCLEAN, ENDGAME, REMOVESEL
+		INVPLAY, MUSTCLEAN, ENDGAME, REMOVESEL, SHOWTABLE
 	};
 
 	private Target target;

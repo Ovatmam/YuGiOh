@@ -1,9 +1,11 @@
-package poo;
+package poo.gui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javafx.scene.control.Button;
+import poo.modelo.Card;
+import poo.modelo.ImageFactory;
 
 public class CardView extends Button implements PropertyChangeListener{
 	private Card card;
@@ -13,6 +15,13 @@ public class CardView extends Button implements PropertyChangeListener{
 	public CardView(Card aCard) {
 		super("", ImageFactory.getInstance().createImage("imgBck"));
 
+		if (aCard.isFacedUp()) {
+			if(aCard.isDefending())
+				this.setGraphic(ImageFactory.getInstance().createImage(aCard.getDefImageId()));
+			else
+				this.setGraphic(ImageFactory.getInstance().createImage(aCard.getImageId()));
+		}
+		
 		card = aCard;
 		card.addPropertyChangeListener(this);
 		thisCardView = this;
@@ -34,10 +43,10 @@ public class CardView extends Button implements PropertyChangeListener{
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (card.isFacedUp()) {
+		if (card.isFacedUp())
 			this.setGraphic(ImageFactory.getInstance().createImage(card.getImageId()));
-		} else {
-			this.setGraphic(ImageFactory.getInstance().createImage("imgBck"));
-		}		
+		//else
+			//this.setGraphic(ImageFactory.getInstance().createImage("imgBck"));
+				
 	}
 }

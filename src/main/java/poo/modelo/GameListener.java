@@ -1,4 +1,4 @@
-package poo;
+package poo.modelo;
 
 import java.util.EventListener;
 

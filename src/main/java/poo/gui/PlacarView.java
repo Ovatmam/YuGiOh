@@ -1,10 +1,13 @@
-package poo;
+package poo.gui;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import poo.modelo.Game;
+import poo.modelo.GameEvent;
+import poo.modelo.GameListener;
 
 public class PlacarView extends GridPane implements GameListener {
 	private TextField ptsJ1, ptsJ2;
@@ -20,8 +23,8 @@ public class PlacarView extends GridPane implements GameListener {
 		ptsJ1 = new TextField();
 		ptsJ2 = new TextField();
 
-		ptsJ1.setText("" + Game.getInstance().getPtsJ1());
-		ptsJ2.setText("" + Game.getInstance().getPtsJ2());
+		ptsJ1.setText("" + Game.getInstance().getVidasJ1());
+		ptsJ2.setText("" + Game.getInstance().getVidasJ2());
 
 		this.add(new Label("Jogador 1:"), 0, 0);
 		this.add(ptsJ1, 1, 0);
@@ -31,7 +34,7 @@ public class PlacarView extends GridPane implements GameListener {
 
 	@Override
 	public void notify(GameEvent event) {
-		ptsJ1.setText("" + Game.getInstance().getPtsJ1());
-		ptsJ2.setText("" + Game.getInstance().getPtsJ2());
+		ptsJ1.setText("" + Game.getInstance().getVidasJ1());
+		ptsJ2.setText("" + Game.getInstance().getVidasJ2());
 	}
 }

@@ -1,4 +1,4 @@
-package poo;
+package poo.modelo;
 
 public class CardEfeito extends CardMonstro{
 
