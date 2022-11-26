@@ -16,8 +16,8 @@ public class Game {
 	}
 
 	private Game() {
-		ptsJ1 = 0;
-		ptsJ2 = 0;
+		ptsJ1 = 1;
+		ptsJ2 = 1;
 		deckJ1 = new CardDeck();
 		deckJ2 = new CardDeck();
 		player = 1;
@@ -66,6 +66,7 @@ public class Game {
 			} else {
 				// Vira a carta
 				deckJ1.getSelectedCard().flip();
+				deckJ1.getSelectedCard().flip();
 				// Proximo jogador
 				nextPlayer();
 			}
@@ -78,10 +79,13 @@ public class Game {
 			} else {
 				// Vira a carta
 				deckJ2.getSelectedCard().flip();
+				deckJ2.getSelectedCard().flip();
 				// Verifica quem ganhou a rodada
-				if (deckJ1.getSelectedCard().getValue() > deckJ2.getSelectedCard().getValue()) {
+				CardMonstro c1 = (CardMonstro) deckJ1.getSelectedCard();
+				CardMonstro c2 = (CardMonstro) deckJ2.getSelectedCard();
+				if (c1.getAtk() > c2.getAtk()) {
 					ptsJ1++;
-				} else if (deckJ1.getSelectedCard().getValue() < deckJ2.getSelectedCard().getValue()) {
+				} else if (c1.getAtk() < c2.getAtk()) {
 					ptsJ2++;
 				}
 				for (var observer : observers) {
@@ -92,6 +96,24 @@ public class Game {
 			}
 		}
 	}
+	/*
+	public void drawCards() {
+		GameEvent gameEvent = null;
+		switch (player) {
+			case 1:
+				deckJ1.drawCard();
+				break;
+			case 2:
+				deckJ2.drawCard();
+				break;
+			default:
+				return;
+		}
+		gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.UPDATE, "");
+		for (var observer : observers) {
+			observer.notify(gameEvent);
+		}
+	}*/
 
 	// Acionada pelo botao de limpar
 	public void removeSelected() {

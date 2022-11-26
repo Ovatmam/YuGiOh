@@ -6,14 +6,13 @@ import java.beans.PropertyChangeSupport;
 public class Card {
 	private String id;
 	private String imageId;
-	private int value;
+	private String name;
 	private boolean faceUp;
 	private final PropertyChangeSupport pcs;
 
-	public Card(String anId, String anImageId, int val) {
+	public Card(String anId, String anImageId) {
 		id = anId;
 		imageId = anImageId;
-		value = val;
 		faceUp = true;
 		pcs = new PropertyChangeSupport(this);
 	}
@@ -22,12 +21,20 @@ public class Card {
 		return id;
 	}
 
-	public String getImageId() {
-		return imageId;
+	public boolean setName(String name) {
+		if(name.equals(null)) {
+			this.name = name;
+			return true;
+		}
+		return false;
 	}
 
-	public int getValue() {
-		return value;
+	public String getName() {
+		return name;
+	}
+
+	public String getImageId() {
+		return imageId;
 	}
 
 	public boolean isFacedUp() {

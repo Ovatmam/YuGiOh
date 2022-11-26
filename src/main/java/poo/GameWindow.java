@@ -33,20 +33,24 @@ public class GameWindow extends Application implements GameListener {
 		ScrollPane sd1 = new ScrollPane();
 		sd1.setPrefSize(1024, 256);
 		sd1.setContent(deckJ1);
-		grid.add(sd1, 0, 0);
+		grid.add(sd1, 1, 0);
 
 		PlacarView placar = new PlacarView();
-		grid.add(placar, 0, 1);
+		grid.add(placar, 1, 1);
 
-		Button butClean = new Button("Clean");
-		grid.add(butClean, 1, 1);
+		Button butClean = new Button("Finalizar");
+		grid.add(butClean, 2, 1);
 		butClean.setOnAction(e -> Game.getInstance().removeSelected());
+
+		Button drawCard = new Button("Draw Card");
+		grid.add(drawCard, 0,1);
+		drawCard.setOnAction(e -> Game.getInstance().removeSelected());
 
 		DeckView deckJ2 = new DeckView(2);
 		ScrollPane sd2 = new ScrollPane();
 		sd2.setPrefSize(1024, 256);
 		sd2.setContent(deckJ2);
-		grid.add(sd2, 0, 2);
+		grid.add(sd2, 1, 2);
 
 		Scene scene = new Scene(grid);
 
@@ -89,6 +93,7 @@ public class GameWindow extends Application implements GameListener {
 				break;
 			case REMOVESEL:
 				// Esse evento não vem para cá
+				break;
 			}
 		}
 	}
