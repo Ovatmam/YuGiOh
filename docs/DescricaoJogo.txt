@@ -1,12 +1,22 @@
 Jogo: Batalha de Cartas
 Instruções:
 - O deck da parte superior da janela e o deck do jogador 1. O da parte inferior o do jogador 2.
-- O jogador 1 sempre joga primeiro
-- Na sua vez cada jogador escolhe uma carta para virar
-- O jogador que virar a carta de valor maior ganha a rodada (1 ponto)
-- O sistema verifica quem ganhou a rodada logo após o jogador 2 virar sua carta
-- Para iniciar a proxima rodada e necessario clicar o botao "clean"
-- Quando as cartas acabam o jogo termina
+- O jogador 1 sempre começa
+- Cada jogador pode ter 3 monstros em campo
+- Cada jogador só pode invocar 1 monstro por turno
+- Cada monstro só pode atacar uma vez por turno
+- Na primeira rodada nenhum jogador pode atacar
+- Na sua vez cada jogador pesca uma carta e pode realizar algumas ações, sendo elas:
+    -> atacar um monstro inimigo
+    -> girar uma carta para modo de defesa/ataque
+    -> virar uma carta que estava virada para baixo (não pode virar uma carta que estava virada pra cima)
+- No ataque, se ambos estiverem em modo de ataque, o que possuir o maior ataque vence, a carta mais fraca é destruida
+    -> Se o atacado for um monstro em modo de defesa, o ataque do atacante deve ser maior que a defesa do atacado. O mais fraco é destruido
+    -> Ao atacar, se o jogador inimigo não possuir nenhum monstro em campo, pode atacar diretamente a vida do adversário
+- O efeito de magias e monstros com efeito será "eliminar um monstro inimigo", consumindo a carta após o uso.
+- Para iniciar a proxima rodada e necessario clicar o botao "Finalizar"
+- Cada jogador tem 1 vida.
+- Quem zerar de vida primeiro perde
 
 Implementacao:
 - A lógica do jogo e controlada pela classe "Game".

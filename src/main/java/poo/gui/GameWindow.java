@@ -93,6 +93,15 @@ public class GameWindow extends Application implements GameListener {
 
 
 		Button butDraw1 = new Button("Draw");
+		Button butDraw2 = new Button("Draw");
+		Button butSummon1 = new Button("Summon");
+		Button butSummon2 = new Button("Summon");
+		Button butSet1 = new Button("Set");
+		Button butSet2 = new Button("Set");
+		Button butAtk1 = new Button("Attack");
+		Button butMode = new Button("Change Mode");
+		Button butFinal = new Button("Finalizar Turno");
+
 		butDraw1.setOnAction(e -> {Game.getInstance().drawCards();
 								   Game.getInstance().getDeckJ1().setSelectedCard(null);
 								   butDraw1.setDisable(true);
@@ -100,7 +109,6 @@ public class GameWindow extends Application implements GameListener {
 							);
 		grid1.add(butDraw1, 1, 0);
 
-		Button butDraw2 = new Button("Draw");
 		butDraw2.setOnAction(e -> {Game.getInstance().drawCards();
 								   Game.getInstance().getDeckJ2().setSelectedCard(null);
 								   butDraw2.setDisable(true);
@@ -108,27 +116,26 @@ public class GameWindow extends Application implements GameListener {
 							);
 		grid2.add(butDraw2, 1, 0);
 
-		Button butSummon1 = new Button("Summon");
 		butSummon1.setOnAction(e -> {Card c = Game.getInstance().getDeckJ1().getSelectedCard();
 									 Game.getInstance().getMesaJ1().addCard(Game.getInstance().getDeckJ1().getSelectedCard());
 									 Game.getInstance().getDeckJ1().removeSel();
 									 Game.getInstance().getDeckJ1().setSelectedCard(c);
 									 butSummon1.setDisable(true);
+									 butSet1.setDisable(true);
 									}
 							  );
 		grid1.add(butSummon1, 0, 1);
 
-		Button butSummon2 = new Button("Summon");
 		butSummon2.setOnAction(e -> {Card c = Game.getInstance().getDeckJ2().getSelectedCard();
 									 Game.getInstance().getMesaJ2().addCard(Game.getInstance().getDeckJ2().getSelectedCard());
 									 Game.getInstance().getDeckJ2().removeSel();
 									 Game.getInstance().getDeckJ2().setSelectedCard(c);
 									 butSummon2.setDisable(true);
+									 butSet2.setDisable(true);
 									}
 							  );
 		grid2.add(butSummon2, 0, 1);
-									
-		Button butSet1 = new Button("Set");
+		
 		butSet1.setOnAction(e -> {CardMonstro c = (CardMonstro) Game.getInstance().getDeckJ1().getSelectedCard();
 									 c.changeMode();
 									 Game.getInstance().getMesaJ1().addCard(c);
@@ -140,49 +147,121 @@ public class GameWindow extends Application implements GameListener {
 							  );
 		grid1.add(butSet1, 1, 1);
 
-		Button butMode = new Button("Change Mode");
-		grid3.add(butMode, 2, 0);
-		butMode.setOnAction(e->{if(Game.getInstance().getPlayer() == 1){
-									if(Game.getInstance().getMesaJ1().getSelectedCard() instanceof CardEfeito) {
-										CardEfeito c = (CardEfeito) Game.getInstance().getMesaJ1().getSelectedCard();
-										c.changeMode();
-										Game.getInstance().getMesaJ1().removeSel();
-										Game.getInstance().getMesaJ1().addCard(c);
+		butSet2.setOnAction(e -> {CardMonstro c = (CardMonstro) Game.getInstance().getDeckJ1().getSelectedCard();
+									 c.changeMode();
+									 Game.getInstance().getMesaJ1().addCard(c);
+									 Game.getInstance().getDeckJ1().removeSel();
+									 Game.getInstance().getDeckJ1().setSelectedCard(c);
+									 butSet2.setDisable(true);
+									 butSummon2.setDisable(true);
 									}
-									else if(Game.getInstance().getMesaJ1().getSelectedCard() instanceof CardMonstro) {
-										CardMonstro c = (CardMonstro) Game.getInstance().getMesaJ1().getSelectedCard();
-										c.changeMode();
-										Game.getInstance().getMesaJ1().removeSel();
-										Game.getInstance().getMesaJ1().addCard(c);
-								  	}
-								}
-								else if(Game.getInstance().getPlayer() == 2) {
-									if(Game.getInstance().getMesaJ2().getSelectedCard() instanceof CardEfeito) {
-										CardEfeito c = (CardEfeito) Game.getInstance().getMesaJ2().getSelectedCard();
-										c.changeMode();
-										Game.getInstance().getMesaJ1().removeSel();
-										Game.getInstance().getMesaJ1().addCard(c);
-									}
-									if(Game.getInstance().getMesaJ2().getSelectedCard() instanceof CardMonstro) {
-										CardMonstro c = (CardMonstro) Game.getInstance().getMesaJ2().getSelectedCard();
-										c.changeMode();
-										Game.getInstance().getMesaJ1().removeSel();
-										Game.getInstance().getMesaJ1().addCard(c);
-									}
-								}
-							   }
-						   );
+							  );
+		grid2.add(butSet2, 1, 1);
 
-		Button butClean = new Button("Finalizar Turno");
-		grid3.add(butClean, 2, 1);
-		butClean.setOnAction(e -> {Game.getInstance().removeSelected();
+		butAtk1.setOnAction(e->{
+			if(Game.getInstance().getPlayer() == 1) {
+				if(Game.getInstance().getMesaJ1().getSelectedCard().equals(null)) {
+					Alert alert;
+					alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Erro");
+					alert.setHeaderText(null);
+					alert.setContentText("Sem carta selecionada");
+					alert.showAndWait();
+					return;
+				}
+				if(Game.getInstance().getMesaJ1().getSelectedCard().isDefending()) {
+					Alert alert;
+					alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Ataque inválido");
+					alert.setHeaderText(null);
+					alert.setContentText("Atacante em modo de defesa");
+					alert.showAndWait();
+					return;
+				}
+				CardMonstro c1 = (CardMonstro)Game.getInstance().getMesaJ1().getSelectedCard();
+				CardMonstro c2 = (CardMonstro)Game.getInstance().getMesaJ2().getSelectedCard();
+				if(c2.isDefending()) {
+					if(c1.getAtk() > c2.getDefense()) {  //Carta 1 com ataque maior que a defesa da carta 2
+						Game.getInstance().getMesaJ2().removeSel();
+						return;
+					}
+					else if(c1.getAtk() < c2.getDefense()) { //Carta 1 com ataque menor que a defesa da carta 2
+						Game.getInstance().getMesaJ1().removeSel();
+						return;
+					}
+					else { //Empate
+						Game.getInstance().getMesaJ1().removeSel();
+						Game.getInstance().getMesaJ2().removeSel();
+						return;
+					}
+				}
+				else {
+					if(c1.getAtk() > c2.getAtk()) { //Carta 1 com ataque maior que a carta 2
+						Game.getInstance().getMesaJ2().removeSel();
+						return;
+					}
+					else if(c1.getAtk() < c2.getAtk()) { //Carta 1 com ataque menor que a carta 2
+						Game.getInstance().getMesaJ1().removeSel();
+						return;
+					}
+					else { //Empate
+						Game.getInstance().getMesaJ1().removeSel();
+						Game.getInstance().getMesaJ2().removeSel();
+						return;
+					}
+
+				}
+			}
+			else {
+				
+			}
+		});
+
+		butMode.setOnAction(e->{
+				if(Game.getInstance().getPlayer() == 1){
+					if(Game.getInstance().getMesaJ1().getSelectedCard() instanceof CardEfeito) {
+						CardEfeito c = (CardEfeito) Game.getInstance().getMesaJ1().getSelectedCard();
+						c.changeMode();
+						Game.getInstance().getMesaJ1().removeSel();
+						Game.getInstance().getMesaJ1().addCard(c);
+					}
+					else if(Game.getInstance().getMesaJ1().getSelectedCard() instanceof CardMonstro) {
+						CardMonstro c = (CardMonstro) Game.getInstance().getMesaJ1().getSelectedCard();
+						c.changeMode();
+						Game.getInstance().getMesaJ1().removeSel();
+						Game.getInstance().getMesaJ1().addCard(c);
+					}
+				}
+				else if(Game.getInstance().getPlayer() == 2) {
+					if(Game.getInstance().getMesaJ2().getSelectedCard() instanceof CardEfeito) {
+						CardEfeito c = (CardEfeito) Game.getInstance().getMesaJ2().getSelectedCard();
+						c.changeMode();
+						Game.getInstance().getMesaJ1().removeSel();
+						Game.getInstance().getMesaJ1().addCard(c);
+					}
+					if(Game.getInstance().getMesaJ2().getSelectedCard() instanceof CardMonstro) {
+						CardMonstro c = (CardMonstro) Game.getInstance().getMesaJ2().getSelectedCard();
+						c.changeMode();
+						Game.getInstance().getMesaJ1().removeSel();
+						Game.getInstance().getMesaJ1().addCard(c);
+					}
+				}
+			}
+						   );
+		grid3.add(butMode, 2, 0);
+
+		butFinal.setOnAction(e -> {Game.getInstance().removeSelected();
 								   //Game.getInstance().nextPlayer();
 								   butDraw1.setDisable(false);
 								   butDraw2.setDisable(false);
 								   butSummon1.setDisable(false);
 								   butSummon2.setDisable(false);
+								   butSet1.setDisable(false);
+								   butSet2.setDisable(false);
+								   butAtk1.setDisable(false);
 								  }
 							);
+		grid3.add(butFinal, 2, 1);
 
 
 

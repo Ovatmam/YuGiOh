@@ -73,6 +73,17 @@ public class Game {
 		return mesaJ2;
 	}
 
+	public void doDamage(int player) {
+		switch (player) {
+			case 1:
+			vidasJ1--;
+				return;
+			case 2:
+			vidasJ2--;
+				return;
+		}
+	}
+
 	public void play(CardDeck deckAcionado) {
 		GameEvent gameEvent = null;
 		if (player == 3) {
@@ -147,6 +158,21 @@ public class Game {
 		
 		mesaJ2.addCard( deckJ2.getSelectedCard() );
 		deckJ2.removeSel();
+		nextPlayer();
+	}
+
+	public void finalizarTurno() {
+		GameEvent gameEvent = null;
+		if (player != 3) {
+			return;
+		}
+		jogadas--;
+		if (jogadas == 0) {
+			gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, "");
+			for (var observer : observers) {
+				observer.notify(gameEvent);
+			}
+		}
 		nextPlayer();
 	}
 	
