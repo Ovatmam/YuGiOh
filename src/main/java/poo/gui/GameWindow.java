@@ -90,6 +90,8 @@ public class GameWindow extends Application implements GameListener {
 		PlacarView placar = new PlacarView();
 		grid3.add(placar, 1, 1);
 
+		
+
 
 
 		Button butDraw1 = new Button("Draw");
@@ -98,22 +100,20 @@ public class GameWindow extends Application implements GameListener {
 		Button butSummon2 = new Button("Summon");
 		Button butSet1 = new Button("Set");
 		Button butSet2 = new Button("Set");
-		Button butAtk1 = new Button("Attack");
+		Button butAtk = new Button("Attack");
 		Button butMode = new Button("Change Mode");
 		Button butFinal = new Button("Finalizar Turno");
 
 		butDraw1.setOnAction(e -> {Game.getInstance().drawCards();
 								   Game.getInstance().getDeckJ1().setSelectedCard(null);
 								   butDraw1.setDisable(true);
-								  }
-							);
+								  });
 		grid1.add(butDraw1, 1, 0);
 
 		butDraw2.setOnAction(e -> {Game.getInstance().drawCards();
 								   Game.getInstance().getDeckJ2().setSelectedCard(null);
 								   butDraw2.setDisable(true);
-								  }
-							);
+								  });
 		grid2.add(butDraw2, 1, 0);
 
 		butSummon1.setOnAction(e -> {Card c = Game.getInstance().getDeckJ1().getSelectedCard();
@@ -122,8 +122,7 @@ public class GameWindow extends Application implements GameListener {
 									 Game.getInstance().getDeckJ1().setSelectedCard(c);
 									 butSummon1.setDisable(true);
 									 butSet1.setDisable(true);
-									}
-							  );
+									});
 		grid1.add(butSummon1, 0, 1);
 
 		butSummon2.setOnAction(e -> {Card c = Game.getInstance().getDeckJ2().getSelectedCard();
@@ -132,8 +131,7 @@ public class GameWindow extends Application implements GameListener {
 									 Game.getInstance().getDeckJ2().setSelectedCard(c);
 									 butSummon2.setDisable(true);
 									 butSet2.setDisable(true);
-									}
-							  );
+									});
 		grid2.add(butSummon2, 0, 1);
 		
 		butSet1.setOnAction(e -> {CardMonstro c = (CardMonstro) Game.getInstance().getDeckJ1().getSelectedCard();
@@ -143,79 +141,21 @@ public class GameWindow extends Application implements GameListener {
 									 Game.getInstance().getDeckJ1().setSelectedCard(c);
 									 butSet1.setDisable(true);
 									 butSummon1.setDisable(true);
-									}
-							  );
+									});
 		grid1.add(butSet1, 1, 1);
 
-		butSet2.setOnAction(e -> {CardMonstro c = (CardMonstro) Game.getInstance().getDeckJ1().getSelectedCard();
+		butSet2.setOnAction(e -> {CardMonstro c = (CardMonstro) Game.getInstance().getDeckJ2().getSelectedCard();
 									 c.changeMode();
-									 Game.getInstance().getMesaJ1().addCard(c);
-									 Game.getInstance().getDeckJ1().removeSel();
-									 Game.getInstance().getDeckJ1().setSelectedCard(c);
+									 Game.getInstance().getMesaJ2().addCard(c);
+									 Game.getInstance().getDeckJ2().removeSel();
+									 Game.getInstance().getDeckJ2().setSelectedCard(c);
 									 butSet2.setDisable(true);
 									 butSummon2.setDisable(true);
-									}
-							  );
+									});
 		grid2.add(butSet2, 1, 1);
 
-		butAtk1.setOnAction(e->{
-			if(Game.getInstance().getPlayer() == 1) {
-				if(Game.getInstance().getMesaJ1().getSelectedCard().equals(null)) {
-					Alert alert;
-					alert = new Alert(AlertType.WARNING);
-					alert.setTitle("Erro");
-					alert.setHeaderText(null);
-					alert.setContentText("Sem carta selecionada");
-					alert.showAndWait();
-					return;
-				}
-				if(Game.getInstance().getMesaJ1().getSelectedCard().isDefending()) {
-					Alert alert;
-					alert = new Alert(AlertType.WARNING);
-					alert.setTitle("Ataque inválido");
-					alert.setHeaderText(null);
-					alert.setContentText("Atacante em modo de defesa");
-					alert.showAndWait();
-					return;
-				}
-				CardMonstro c1 = (CardMonstro)Game.getInstance().getMesaJ1().getSelectedCard();
-				CardMonstro c2 = (CardMonstro)Game.getInstance().getMesaJ2().getSelectedCard();
-				if(c2.isDefending()) {
-					if(c1.getAtk() > c2.getDefense()) {  //Carta 1 com ataque maior que a defesa da carta 2
-						Game.getInstance().getMesaJ2().removeSel();
-						return;
-					}
-					else if(c1.getAtk() < c2.getDefense()) { //Carta 1 com ataque menor que a defesa da carta 2
-						Game.getInstance().getMesaJ1().removeSel();
-						return;
-					}
-					else { //Empate
-						Game.getInstance().getMesaJ1().removeSel();
-						Game.getInstance().getMesaJ2().removeSel();
-						return;
-					}
-				}
-				else {
-					if(c1.getAtk() > c2.getAtk()) { //Carta 1 com ataque maior que a carta 2
-						Game.getInstance().getMesaJ2().removeSel();
-						return;
-					}
-					else if(c1.getAtk() < c2.getAtk()) { //Carta 1 com ataque menor que a carta 2
-						Game.getInstance().getMesaJ1().removeSel();
-						return;
-					}
-					else { //Empate
-						Game.getInstance().getMesaJ1().removeSel();
-						Game.getInstance().getMesaJ2().removeSel();
-						return;
-					}
-
-				}
-			}
-			else {
-				
-			}
-		});
+		butAtk.setOnAction(e->Game.getInstance().attack());
+		grid3.add(butAtk, 0, 1);
 
 		butMode.setOnAction(e->{
 				if(Game.getInstance().getPlayer() == 1){
@@ -246,11 +186,10 @@ public class GameWindow extends Application implements GameListener {
 						Game.getInstance().getMesaJ1().addCard(c);
 					}
 				}
-			}
-						   );
+			});
 		grid3.add(butMode, 2, 0);
 
-		butFinal.setOnAction(e -> {Game.getInstance().removeSelected();
+		butFinal.setOnAction(e -> {Game.getInstance().finalizarTurno();
 								   //Game.getInstance().nextPlayer();
 								   butDraw1.setDisable(false);
 								   butDraw2.setDisable(false);
@@ -258,7 +197,7 @@ public class GameWindow extends Application implements GameListener {
 								   butSummon2.setDisable(false);
 								   butSet1.setDisable(false);
 								   butSet2.setDisable(false);
-								   butAtk1.setDisable(false);
+								   butAtk.setDisable(false);
 								  }
 							);
 		grid3.add(butFinal, 2, 1);

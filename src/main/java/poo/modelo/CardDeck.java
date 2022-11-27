@@ -36,6 +36,10 @@ public class CardDeck {
 		return cartas.size();
 	}
 
+	public boolean isEmpty() {
+		return cartas.size() == 0;
+	}
+
 	public void drawCard() {
 		Random r = new Random();
 		int n = r.nextInt(5) + 1;
