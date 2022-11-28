@@ -225,8 +225,10 @@ public class GameWindow extends Application implements GameListener {
 			Game.getInstance().getMesaJ1().addCard(c);
 			Game.getInstance().getDeckJ1().removeSel();
 			Game.getInstance().getDeckJ1().setSelectedCard(c);
-			butSet1.setDisable(true);
-			butSummon1.setDisable(true);
+			if(Game.getInstance().placedMagicCard() && Game.getInstance().placedMonsterCard()) {
+				butSummon1.setDisable(true);
+				butSet1.setDisable(true);
+			}
 		});
 
 		butSet2.setOnAction(e -> {
@@ -246,8 +248,10 @@ public class GameWindow extends Application implements GameListener {
 			Game.getInstance().getMesaJ2().addCard(c);
 			Game.getInstance().getDeckJ2().removeSel();
 			Game.getInstance().getDeckJ2().setSelectedCard(c);
-			butSet2.setDisable(true);
-			butSummon2.setDisable(true);
+			if(Game.getInstance().placedMagicCard() && Game.getInstance().placedMonsterCard()) {
+				butSummon2.setDisable(true);
+				butSet2.setDisable(true);
+			}
 		});
 
 		butAtk.setOnAction(e->{
