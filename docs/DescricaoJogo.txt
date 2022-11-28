@@ -7,16 +7,25 @@ Instruções:
 - Cada jogador só pode usar 1 magia por turno
 - Cada monstro só pode atacar uma vez por turno
 - Na primeira rodada nenhum jogador pode atacar
-- Na sua vez cada jogador pesca uma carta e pode realizar algumas ações, sendo elas:
-    -> atacar um monstro inimigo
+- Na sua vez cada jogador pode realizar algumas ações, sendo elas:
+	Na mão do jogador:
+    -> pescar uma carta
+	-> invocar uma carta de monstro em modo de ataque(summon)
+	-> invocar uma carta de monstro em modo de defesa (set)
+	-> invocar uma carta de magia (summon ou set)
+	Na mesa:
+	-> atacar um monstro inimigo
     -> girar uma carta para modo de defesa/ataque
-    -> virar uma carta que estava virada para baixo (não pode virar uma carta que estava virada pra cima)
+    -> usar o efeito de um monstro ou usar uma magia
+	-> finalizar turno
 - No ataque, se ambos estiverem em modo de ataque, o que possuir o maior ataque vence, a carta mais fraca é destruida
     -> Se o atacado for um monstro em modo de defesa, o ataque do atacante deve ser maior que a defesa do atacado. O mais fraco é destruido
-    -> Ao atacar, se o jogador inimigo não possuir nenhum monstro em campo, pode atacar diretamente a vida do adversário
-- O efeito de magias e monstros com efeito será "eliminar um monstro inimigo", consumindo a carta após o uso.
-- Para iniciar a proxima rodada e necessario clicar o botao "Finalizar"
-- Cada jogador tem 1 vida.
+    -> Ao atacar, se o jogador inimigo não possuir nenhum monstro em campo, pode atacar diretamente o adversário, reduzindo um ponto de vida dele
+	-> Cada monstro só pode atacar uma vez por rodada, e se possuir efeito, só pode usar uma única vez
+	-> Por turno, só pode ser usada uma carta de magia
+- O efeito de magias e monstros com efeito será "eliminar uma carta inimiga", consumindo as duas cartas após o uso.
+- Para iniciar o proximo turno e necessario clicar o botao "Finalizar Turno"
+- Cada jogador tem 2 vidas.
 - Quem zerar de vida primeiro perde
 
 Implementacao:
