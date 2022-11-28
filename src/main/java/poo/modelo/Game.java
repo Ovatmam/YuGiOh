@@ -15,6 +15,9 @@ public class Game {
 	private CardDeck deckJ1, deckJ2;
 	private CardDeck mesaJ1, mesaJ2;
 	private int player;
+	private boolean placedMagicCard;
+	private boolean placedMonsterCard;
+	private boolean usedMagic;
 	private int turnos;
 	private List<GameListener> observers;
 	
@@ -23,20 +26,27 @@ public class Game {
 	}
 
 	private Game() {
-		vidasJ1 = 1;
-		vidasJ2 = 1;
+		vidasJ1 = 2;
+		vidasJ2 = 2;
 		turnos = 1;
 		deckJ1 = new CardDeck(CardDeck.NCARDS);
 		deckJ2 = new CardDeck(CardDeck.NCARDS);
 		mesaJ1 = new CardDeck(0);
 		mesaJ2 = new CardDeck(0);
 		player = 1;
+		placedMagicCard = false;
+		placedMonsterCard = false;
+		usedMagic = false;
 		observers = new LinkedList<>();
+		mesaJ1.clear();
+		mesaJ2.clear();
 	}
 
 	public void nextPlayer() {
 		turnos++;
 		player++;
+		placedMagicCard = false;
+		placedMonsterCard = false;
 		if (player == 3) {
 			player = 1;
 		}
@@ -78,6 +88,22 @@ public class Game {
 		return mesaJ2;
 	}
 
+	public void placeMagic() {
+		placedMagicCard = true;
+	}
+
+	public boolean placedMagicCard() {
+		return placedMagicCard;
+	}
+
+	public void placeMonster() {
+		placedMonsterCard = true;
+	}
+
+	public boolean placedMonsterCard() {
+		return placedMonsterCard;
+	}
+
 	public void play(CardDeck deckAcionado) {
 		GameEvent gameEvent = null;
 		if (deckAcionado == deckJ1) {
@@ -87,7 +113,6 @@ public class Game {
 					observer.notify(gameEvent);
 				}
 			} 
-			//else nextPlayer();
 			
 		} else if (deckAcionado == deckJ2) {
 			if (player != 2) {
@@ -96,7 +121,6 @@ public class Game {
 					observer.notify(gameEvent);
 				}
 			} 
-			//else nextPlayer();
 		}
 	}
 
@@ -114,23 +138,47 @@ public class Game {
 		if(turnos <= 2)
 			return;
 		if(player == 1) {
-			if(mesaJ1.getSelectedCard().equals(null) || mesaJ1.getSelectedCard().isDefending()) {
+			if(!(mesaJ1.getSelectedCard() instanceof CardMonstro) || mesaJ1.getSelectedCard().isDefending()) {
 				Erro("Atacante invalido");
 				return;
 			}
-			else if(mesaJ2.isEmpty()) {
-				vidasJ2--;
-				return;
+			else {
+				CardMonstro c = (CardMonstro)mesaJ1.getSelectedCard();
+				if(!c.hasAttacked()) {
+					if(!mesaJ2.hasMonsters() && !c.equals(null)) {
+						c.attack();
+						vidasJ2--;
+						if(vidasJ2 == 0)
+							finalizarTurno();
+						GameEvent gameEvent = new GameEvent(this, GameEvent.Target.DECK, GameEvent.Action.SHOWTABLE, "");
+						for (var observer : observers) {
+							observer.notify(gameEvent);
+						}
+						return;
+					}
+				}
 			}
 		}
 		if(player == 2) {
-			if(mesaJ2.getSelectedCard().equals(null) || mesaJ2.getSelectedCard().isDefending()) {
+			if(!(mesaJ2.getSelectedCard() instanceof CardMonstro) || mesaJ2.getSelectedCard().isDefending()) {
 				Erro("Atacante invalido");
 				return;
 			}
-			else if(mesaJ1.isEmpty()) {
-				vidasJ1--;
-				return;
+			else {
+				CardMonstro c = (CardMonstro)mesaJ2.getSelectedCard();
+				if(!c.hasAttacked()) {
+					if(!mesaJ1.hasMonsters() && !c.equals(null)) {
+						c.attack();
+						vidasJ1--;
+						if(vidasJ1 == 0)
+							finalizarTurno();
+						GameEvent gameEvent = new GameEvent(this, GameEvent.Target.DECK, GameEvent.Action.SHOWTABLE, "");
+						for (var observer : observers) {
+							observer.notify(gameEvent);
+						}
+						return;
+					}
+				}
 			}
 		}
 		CardMonstro c1 = (CardMonstro)mesaJ1.getSelectedCard();
@@ -210,17 +258,49 @@ public class Game {
 				Erro("Sem carta selecionada ou a mesa do oponente está vazia");
 				return;
 			}
-			if(mesaJ1.getSelectedCard() instanceof CardEfeito && ((CardEfeito)mesaJ1.getSelectedCard()).hasEfeito()) {
+			if(mesaJ1.getSelectedCard() instanceof CardEfeito && !mesaJ2.getSelectedCard().equals(null)) {
+				if(!((CardEfeito)mesaJ1.getSelectedCard()).hasEfeito()) {
+					Erro("Efeito já utilizado");
+					return;
+				}
 				((CardEfeito)mesaJ1.getSelectedCard()).useEffect();
 				mesaJ2.removeSel();
-				GameEvent gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.SHOWTABLE, "2");
-				for (var observer : observers) {
-					observer.notify(gameEvent);
+			}
+			if(!usedMagic && mesaJ1.getSelectedCard() instanceof CardMagia && !mesaJ2.getSelectedCard().equals(null)) {
+				if(!((CardMagia)mesaJ1.getSelectedCard()).isUsable())
+					return;
+				((CardMagia)mesaJ1.getSelectedCard()).useCard();
+				mesaJ1.removeSel();
+				mesaJ2.removeSel();
+				usedMagic = true;
+			}
+		}
+		if(player == 2) {
+			if(mesaJ2.getSelectedCard().equals(null) || mesaJ1.isEmpty()) {
+				Erro("Sem carta selecionada ou a mesa do oponente está vazia");
+				return;
+			}
+			if(mesaJ2.getSelectedCard() instanceof CardEfeito && !mesaJ1.getSelectedCard().equals(null)) {
+				if(!((CardEfeito)mesaJ2.getSelectedCard()).hasEfeito()) {
+					Erro("Efeito já utilizado");
+					return;
 				}
+				((CardEfeito)mesaJ2.getSelectedCard()).useEffect();
+				mesaJ1.removeSel();
 			}
-			if(mesaJ1.getSelectedCard() instanceof CardMagia && !(mesaJ2.isEmpty())) {
+			if(!usedMagic && mesaJ2.getSelectedCard() instanceof CardMagia && !mesaJ1.getSelectedCard().equals(null)) {
+				if(!((CardMagia)mesaJ2.getSelectedCard()).isUsable())
+					return;
+				((CardMagia)mesaJ2.getSelectedCard()).useCard();
+				mesaJ1.removeSel();
+				mesaJ2.removeSel();
+				usedMagic = true;
+			}
+		}
 
-			}
+		GameEvent gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.SHOWTABLE, "2");
+		for (var observer : observers) {
+			observer.notify(gameEvent);
 		}
 	}
 
@@ -270,16 +350,16 @@ public class Game {
 		mesaJ1.resetCardsAttacks();
 		mesaJ2.resetCardsAttacks();
 		GameEvent gameEvent = null;
+		gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.SHOWTABLE, "");
+		for (var observer : observers) {
+			observer.notify(gameEvent);
+		}
 		if (vidasJ1 == 0 || vidasJ2 == 0) {
 			gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, "");
 			for (var observer : observers) {
 				observer.notify(gameEvent);
 			}
 			return;
-		}
-		gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.SHOWTABLE, "");
-		for (var observer : observers) {
-			observer.notify(gameEvent);
 		}
 		nextPlayer();
 	}

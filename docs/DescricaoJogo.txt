@@ -2,8 +2,9 @@ Jogo: Batalha de Cartas
 Instruções:
 - O deck da parte superior da janela e o deck do jogador 1. O da parte inferior o do jogador 2.
 - O jogador 1 sempre começa
-- Cada jogador pode ter 3 monstros em campo
 - Cada jogador só pode invocar 1 monstro por turno
+- Cada jogador só pode invocar 1 magia por turno
+- Cada jogador só pode usar 1 magia por turno
 - Cada monstro só pode atacar uma vez por turno
 - Na primeira rodada nenhum jogador pode atacar
 - Na sua vez cada jogador pesca uma carta e pode realizar algumas ações, sendo elas:

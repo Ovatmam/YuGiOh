@@ -15,6 +15,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import poo.modelo.Card;
+import poo.modelo.CardMagia;
 import poo.modelo.CardMonstro;
 import poo.modelo.Game;
 import poo.modelo.GameEvent;
@@ -122,6 +123,7 @@ public class GameWindow extends Application implements GameListener {
 		grid3.add(butAtk, 0, 1);
 		grid3.add(butChangeMode, 2, 0);
 		grid3.add(butFinal, 2, 1);
+		grid3.add(butEffect, 2, 2);
 
 		// as acoes dos botoes
 		butEffect.setOnAction(e -> {
@@ -134,8 +136,14 @@ public class GameWindow extends Application implements GameListener {
 				butDraw1.setDisable(false);
 				butSummon1.setDisable(false);
 				butSet1.setDisable(false);
+				butDraw2.setDisable(true);
+				butSummon2.setDisable(true);
+				butSet2.setDisable(true);
 			}
 			if(Game.getInstance().getPlayer() == 2) { //se o novo jogador for o player 2, ativa seus botoes
+				butDraw1.setDisable(true);
+				butSummon1.setDisable(true);
+				butSet1.setDisable(true);
 				butDraw2.setDisable(false);
 				butSummon2.setDisable(false);
 				butSet2.setDisable(false);	
@@ -161,25 +169,59 @@ public class GameWindow extends Application implements GameListener {
 		
 		butSummon1.setOnAction(e -> {
 			Card c = Game.getInstance().getDeckJ1().getSelectedCard();
-			Game.getInstance().getMesaJ1().addCard(Game.getInstance().getDeckJ1().getSelectedCard());
+			if(c instanceof CardMagia) {
+				if(Game.getInstance().placedMagicCard())
+					return;
+				Game.getInstance().placeMagic();
+				c.flip();
+			}
+			else if(Game.getInstance().placedMonsterCard())
+				return;
+			else
+				Game.getInstance().placeMonster();
+			Game.getInstance().getMesaJ1().addCard(c);
 			Game.getInstance().getDeckJ1().removeSel();
-			Game.getInstance().getDeckJ1().setSelectedCard(c);
-			butSummon1.setDisable(true);
-			butSet1.setDisable(true);
+			if(Game.getInstance().placedMagicCard() && Game.getInstance().placedMonsterCard()) {
+				butSummon1.setDisable(true);
+				butSet1.setDisable(true);
+			}
 		});
 		
 		butSummon2.setOnAction(e -> {
 			Card c = Game.getInstance().getDeckJ2().getSelectedCard();
+			if(c instanceof CardMagia) {
+				if(Game.getInstance().placedMagicCard())
+					return;
+				Game.getInstance().placeMagic();
+				c.flip();
+			}
+			else if(Game.getInstance().placedMonsterCard())
+				return;
+			else
+				Game.getInstance().placeMonster();
 			Game.getInstance().getMesaJ2().addCard(Game.getInstance().getDeckJ2().getSelectedCard());
 			Game.getInstance().getDeckJ2().removeSel();
 			Game.getInstance().getDeckJ2().setSelectedCard(c);
-			butSummon2.setDisable(true);
-			butSet2.setDisable(true);
+			if(Game.getInstance().placedMagicCard() && Game.getInstance().placedMonsterCard()) {
+				butSummon2.setDisable(true);
+				butSet2.setDisable(true);
+			}
 		});
 		
 		butSet1.setOnAction(e -> {
-			CardMonstro c = (CardMonstro) Game.getInstance().getDeckJ1().getSelectedCard();
-			c.changeMode();
+			Card c = Game.getInstance().getDeckJ1().getSelectedCard();
+			if(c instanceof CardMagia) {
+				if(Game.getInstance().placedMagicCard())
+					return;
+				Game.getInstance().placeMagic();
+				c.flip();
+			}
+			else if(Game.getInstance().placedMonsterCard())
+				return;
+			else {
+				Game.getInstance().placeMonster();
+				c.changeMode();
+			}
 			Game.getInstance().getMesaJ1().addCard(c);
 			Game.getInstance().getDeckJ1().removeSel();
 			Game.getInstance().getDeckJ1().setSelectedCard(c);
@@ -188,8 +230,19 @@ public class GameWindow extends Application implements GameListener {
 		});
 
 		butSet2.setOnAction(e -> {
-			CardMonstro c = (CardMonstro) Game.getInstance().getDeckJ2().getSelectedCard();
-			c.changeMode();
+			Card c = Game.getInstance().getDeckJ2().getSelectedCard();
+			if(c instanceof CardMagia) {
+				if(Game.getInstance().placedMagicCard())
+					return;
+				Game.getInstance().placeMagic();
+				c.flip();
+			}
+			else if(Game.getInstance().placedMonsterCard())
+				return;
+			else {
+				Game.getInstance().placeMonster();
+				c.changeMode();
+			}
 			Game.getInstance().getMesaJ2().addCard(c);
 			Game.getInstance().getDeckJ2().removeSel();
 			Game.getInstance().getDeckJ2().setSelectedCard(c);

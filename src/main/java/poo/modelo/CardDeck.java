@@ -19,12 +19,12 @@ public class CardDeck {
 		cartas = new ArrayList<>(nroCartas);
 		selected = null;
 		Random r = new Random();
-		for (int i = 0; i < nroCartas; i++) {
-			int n = r.nextInt(5) + 1;
+		for (int i = 0; i < nroCartas-1; i++) {
+			int n = r.nextInt(6) + 1;
 			Card c = new Card("C" + n, "img" + n);
-			c.flip();
 			setCardStats(c);
 		}
+		setCardStats(new Card("C6", "img6"));
 		observers = new LinkedList<>();
 	}
 
@@ -40,9 +40,21 @@ public class CardDeck {
 		return cartas.size() == 0;
 	}
 
+	public void clear() {
+		cartas.clear();
+	}
+
+	public boolean hasMonsters() {
+		for(Card c : cartas) {
+			if(c instanceof CardMonstro)
+				return true;
+		}
+		return false;
+	}
+
 	public void drawCard() {
 		Random r = new Random();
-		int n = r.nextInt(5) + 1;
+		int n = r.nextInt(6) + 1;
 		Card c = new Card("C" + n, "img" + n);
 		addCard(c);
 	}
@@ -142,14 +154,11 @@ public class CardDeck {
 				cartas.add(c5);
 				break;
 			case "img6":
-				break;
-			case "img7":
-				break;
-			case "img8":
-				break;
-			case "img9":
-				break;
-			case "img10":
+				CardMagia c6 = new CardMagia(c.getId(), c.getImageId());
+				c6.setName("Polimerização");
+				if(!c.isFacedUp())
+					c6.flip();
+				cartas.add(c6);
 				break;
 		}
 	}

@@ -8,6 +8,10 @@ public class CardMagia extends Card{
         super(anId, anImageId);
         usable = true;
     }
+
+    public void useCard() {
+        usable = false;
+    }
     
     public boolean isUsable() {
         return usable;

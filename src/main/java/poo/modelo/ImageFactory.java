@@ -42,8 +42,6 @@ public class ImageFactory {
 			return ("/imagens/CincoDef.png");
 		case "img6":
 			return ("/imagens/Seis.png");
-		case "img6Def":
-			return ("/imagens/SeisDef.png");
 		case "img7":
 			return ("/imagens/Sete.png");
 		case "img8":
@@ -64,7 +62,6 @@ public class ImageFactory {
 		Image img = images.get(imgId);
 		
 		if (img == null) {
-//			img = new Image(id2File(imgId));
 			img = new Image(getClass().getResourceAsStream(id2File(imgId)),300,150,true,true);
 			images.put(imgId, img);
 		}
