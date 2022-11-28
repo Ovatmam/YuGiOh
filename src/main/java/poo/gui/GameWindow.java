@@ -1,7 +1,7 @@
 package poo.gui;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
+//import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -15,7 +15,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import poo.modelo.Card;
-import poo.modelo.CardEfeito;
 import poo.modelo.CardMonstro;
 import poo.modelo.Game;
 import poo.modelo.GameEvent;
@@ -90,8 +89,6 @@ public class GameWindow extends Application implements GameListener {
 		PlacarView placar = new PlacarView();
 		grid3.add(placar, 1, 1);
 
-		
-
 
 
 		Button butDraw1 = new Button("Draw");
@@ -101,107 +98,114 @@ public class GameWindow extends Application implements GameListener {
 		Button butSet1 = new Button("Set");
 		Button butSet2 = new Button("Set");
 		Button butAtk = new Button("Attack");
-		Button butMode = new Button("Change Mode");
+		Button butChangeMode = new Button("Change Mode");
+		Button butEffect = new Button("Use Card/Effect");
 		Button butFinal = new Button("Finalizar Turno");
 
-		butDraw1.setOnAction(e -> {Game.getInstance().drawCards();
-								   Game.getInstance().getDeckJ1().setSelectedCard(null);
-								   butDraw1.setDisable(true);
-								  });
-		grid1.add(butDraw1, 1, 0);
+		//no inicio, os botoes do jogador 2 devem estar desativados
+		butDraw2.setDisable(true);
+		butSummon2.setDisable(true);
+		butSet2.setDisable(true);
+		butAtk.setDisable(true);
+		butChangeMode.setDisable(true);
+		butEffect.setDisable(true);
 
-		butDraw2.setOnAction(e -> {Game.getInstance().drawCards();
-								   Game.getInstance().getDeckJ2().setSelectedCard(null);
-								   butDraw2.setDisable(true);
-								  });
-		grid2.add(butDraw2, 1, 0);
-
-		butSummon1.setOnAction(e -> {Card c = Game.getInstance().getDeckJ1().getSelectedCard();
-									 Game.getInstance().getMesaJ1().addCard(Game.getInstance().getDeckJ1().getSelectedCard());
-									 Game.getInstance().getDeckJ1().removeSel();
-									 Game.getInstance().getDeckJ1().setSelectedCard(c);
-									 butSummon1.setDisable(true);
-									 butSet1.setDisable(true);
-									});
+		//adicionando os bototes nas tabelas
 		grid1.add(butSummon1, 0, 1);
-
-		butSummon2.setOnAction(e -> {Card c = Game.getInstance().getDeckJ2().getSelectedCard();
-									 Game.getInstance().getMesaJ2().addCard(Game.getInstance().getDeckJ2().getSelectedCard());
-									 Game.getInstance().getDeckJ2().removeSel();
-									 Game.getInstance().getDeckJ2().setSelectedCard(c);
-									 butSummon2.setDisable(true);
-									 butSet2.setDisable(true);
-									});
-		grid2.add(butSummon2, 0, 1);
-		
-		butSet1.setOnAction(e -> {CardMonstro c = (CardMonstro) Game.getInstance().getDeckJ1().getSelectedCard();
-									 c.changeMode();
-									 Game.getInstance().getMesaJ1().addCard(c);
-									 Game.getInstance().getDeckJ1().removeSel();
-									 Game.getInstance().getDeckJ1().setSelectedCard(c);
-									 butSet1.setDisable(true);
-									 butSummon1.setDisable(true);
-									});
+		grid1.add(butDraw1, 1, 0);
 		grid1.add(butSet1, 1, 1);
 
-		butSet2.setOnAction(e -> {CardMonstro c = (CardMonstro) Game.getInstance().getDeckJ2().getSelectedCard();
-									 c.changeMode();
-									 Game.getInstance().getMesaJ2().addCard(c);
-									 Game.getInstance().getDeckJ2().removeSel();
-									 Game.getInstance().getDeckJ2().setSelectedCard(c);
-									 butSet2.setDisable(true);
-									 butSummon2.setDisable(true);
-									});
+		grid2.add(butSummon2, 0, 1);
+		grid2.add(butDraw2, 1, 0);
 		grid2.add(butSet2, 1, 1);
 
-		butAtk.setOnAction(e->Game.getInstance().attack());
 		grid3.add(butAtk, 0, 1);
-
-		butMode.setOnAction(e->{
-				if(Game.getInstance().getPlayer() == 1){
-					if(Game.getInstance().getMesaJ1().getSelectedCard() instanceof CardEfeito) {
-						CardEfeito c = (CardEfeito) Game.getInstance().getMesaJ1().getSelectedCard();
-						c.changeMode();
-						Game.getInstance().getMesaJ1().removeSel();
-						Game.getInstance().getMesaJ1().addCard(c);
-					}
-					else if(Game.getInstance().getMesaJ1().getSelectedCard() instanceof CardMonstro) {
-						CardMonstro c = (CardMonstro) Game.getInstance().getMesaJ1().getSelectedCard();
-						c.changeMode();
-						Game.getInstance().getMesaJ1().removeSel();
-						Game.getInstance().getMesaJ1().addCard(c);
-					}
-				}
-				else if(Game.getInstance().getPlayer() == 2) {
-					if(Game.getInstance().getMesaJ2().getSelectedCard() instanceof CardEfeito) {
-						CardEfeito c = (CardEfeito) Game.getInstance().getMesaJ2().getSelectedCard();
-						c.changeMode();
-						Game.getInstance().getMesaJ1().removeSel();
-						Game.getInstance().getMesaJ1().addCard(c);
-					}
-					if(Game.getInstance().getMesaJ2().getSelectedCard() instanceof CardMonstro) {
-						CardMonstro c = (CardMonstro) Game.getInstance().getMesaJ2().getSelectedCard();
-						c.changeMode();
-						Game.getInstance().getMesaJ1().removeSel();
-						Game.getInstance().getMesaJ1().addCard(c);
-					}
-				}
-			});
-		grid3.add(butMode, 2, 0);
-
-		butFinal.setOnAction(e -> {Game.getInstance().finalizarTurno();
-								   //Game.getInstance().nextPlayer();
-								   butDraw1.setDisable(false);
-								   butDraw2.setDisable(false);
-								   butSummon1.setDisable(false);
-								   butSummon2.setDisable(false);
-								   butSet1.setDisable(false);
-								   butSet2.setDisable(false);
-								   butAtk.setDisable(false);
-								  }
-							);
+		grid3.add(butChangeMode, 2, 0);
 		grid3.add(butFinal, 2, 1);
 
+		// as acoes dos botoes
+		butEffect.setOnAction(e -> {
+			Game.getInstance().useCardEffect();
+		});
+
+		butFinal.setOnAction(e -> {
+			Game.getInstance().finalizarTurno(); //finaliza o turno e passa de jogador
+			if(Game.getInstance().getPlayer() == 1) { //se o novo jogador for o player 1, ativa seus botoes
+				butDraw1.setDisable(false);
+				butSummon1.setDisable(false);
+				butSet1.setDisable(false);
+			}
+			if(Game.getInstance().getPlayer() == 2) { //se o novo jogador for o player 2, ativa seus botoes
+				butDraw2.setDisable(false);
+				butSummon2.setDisable(false);
+				butSet2.setDisable(false);	
+			}
+			if(Game.getInstance().getTurnos() > 2) { //a partir do segundo turno, comeca a trocassao franca
+				butAtk.setDisable(false);
+				butChangeMode.setDisable(false);
+				butEffect.setDisable(false);
+			}
+		});
+
+		butDraw1.setOnAction(e -> {
+			Game.getInstance().drawCards();
+			Game.getInstance().getDeckJ1().setSelectedCard(null);
+			butDraw1.setDisable(true);
+		});
+		
+		butDraw2.setOnAction(e -> {
+			Game.getInstance().drawCards();
+			Game.getInstance().getDeckJ2().setSelectedCard(null);
+			butDraw2.setDisable(true);
+		});
+		
+		butSummon1.setOnAction(e -> {
+			Card c = Game.getInstance().getDeckJ1().getSelectedCard();
+			Game.getInstance().getMesaJ1().addCard(Game.getInstance().getDeckJ1().getSelectedCard());
+			Game.getInstance().getDeckJ1().removeSel();
+			Game.getInstance().getDeckJ1().setSelectedCard(c);
+			butSummon1.setDisable(true);
+			butSet1.setDisable(true);
+		});
+		
+		butSummon2.setOnAction(e -> {
+			Card c = Game.getInstance().getDeckJ2().getSelectedCard();
+			Game.getInstance().getMesaJ2().addCard(Game.getInstance().getDeckJ2().getSelectedCard());
+			Game.getInstance().getDeckJ2().removeSel();
+			Game.getInstance().getDeckJ2().setSelectedCard(c);
+			butSummon2.setDisable(true);
+			butSet2.setDisable(true);
+		});
+		
+		butSet1.setOnAction(e -> {
+			CardMonstro c = (CardMonstro) Game.getInstance().getDeckJ1().getSelectedCard();
+			c.changeMode();
+			Game.getInstance().getMesaJ1().addCard(c);
+			Game.getInstance().getDeckJ1().removeSel();
+			Game.getInstance().getDeckJ1().setSelectedCard(c);
+			butSet1.setDisable(true);
+			butSummon1.setDisable(true);
+		});
+
+		butSet2.setOnAction(e -> {
+			CardMonstro c = (CardMonstro) Game.getInstance().getDeckJ2().getSelectedCard();
+			c.changeMode();
+			Game.getInstance().getMesaJ2().addCard(c);
+			Game.getInstance().getDeckJ2().removeSel();
+			Game.getInstance().getDeckJ2().setSelectedCard(c);
+			butSet2.setDisable(true);
+			butSummon2.setDisable(true);
+		});
+
+		butAtk.setOnAction(e->{
+			Game.getInstance().attack();
+		});
+
+		butChangeMode.setOnAction(e->{
+			Game.getInstance().changeMode();
+			butChangeMode.setDisable(true);
+		});
+		
 
 
 		DeckView mesaJ2 = new DeckView(-2);

@@ -4,9 +4,23 @@ public class CardMonstro extends Card{
 	
 	private int atk;
 	private int def;
+	private boolean attacked;
 
 	public CardMonstro(String anId, String anImageId) {
 		super(anId, anImageId);
+		attacked = false;
+	}
+
+	public void attack() {
+		attacked = true;
+	}
+
+	public void resetAttack() {
+		attacked = false;
+	}
+
+	public boolean hasAttacked() {
+		return attacked;
 	}
 
 	public boolean setAtk(int atk) {

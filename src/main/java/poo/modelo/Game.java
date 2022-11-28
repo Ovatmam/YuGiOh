@@ -40,7 +40,7 @@ public class Game {
 		if (player == 3) {
 			player = 1;
 		}
-		GameEvent gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVPLAY, "2");
+		GameEvent gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.SHOWTABLE, "2");
 		for (var observer : observers) {
 			observer.notify(gameEvent);
 		}
@@ -86,28 +86,26 @@ public class Game {
 				for (var observer : observers) {
 					observer.notify(gameEvent);
 				}
-			} else {
-				//deckAcionado = mesaJ1;
-				nextPlayer();
-			}
+			} 
+			//else nextPlayer();
+			
 		} else if (deckAcionado == deckJ2) {
 			if (player != 2) {
 				gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.INVPLAY, "1");
 				for (var observer : observers) {
 					observer.notify(gameEvent);
 				}
-			} else {
-				nextPlayer();
-			}
+			} 
+			//else nextPlayer();
 		}
 	}
 
-	public void Erro() {
+	public void Erro(String str) {
 		Alert alert;
 		alert = new Alert(AlertType.WARNING);
 		alert.setTitle("Erro");
 		alert.setHeaderText(null);
-		alert.setContentText("Atacante invalido");
+		alert.setContentText(str);
 		alert.showAndWait();
 		return;
 	}
@@ -117,7 +115,7 @@ public class Game {
 			return;
 		if(player == 1) {
 			if(mesaJ1.getSelectedCard().equals(null) || mesaJ1.getSelectedCard().isDefending()) {
-				Erro();
+				Erro("Atacante invalido");
 				return;
 			}
 			else if(mesaJ2.isEmpty()) {
@@ -127,7 +125,7 @@ public class Game {
 		}
 		if(player == 2) {
 			if(mesaJ2.getSelectedCard().equals(null) || mesaJ2.getSelectedCard().isDefending()) {
-				Erro();
+				Erro("Atacante invalido");
 				return;
 			}
 			else if(mesaJ1.isEmpty()) {
@@ -135,13 +133,29 @@ public class Game {
 				return;
 			}
 		}
-		CardMonstro c1 = (CardMonstro)Game.getInstance().getMesaJ1().getSelectedCard();
-		CardMonstro c2 = (CardMonstro)Game.getInstance().getMesaJ2().getSelectedCard();
+		CardMonstro c1 = (CardMonstro)mesaJ1.getSelectedCard();
+		CardMonstro c2 = (CardMonstro)mesaJ2.getSelectedCard();
 
 		if(c1.equals(null) || c2.equals(null)) {
-			Erro();
+			Erro("Alguma das cartas consta como null");
 			return;
 		}
+		//Marcar que a carta já atacou
+		if(player == 1) {
+			if(((CardMonstro)mesaJ1.getSelectedCard()).hasAttacked()) {
+				Erro("Essa carta já atacou");
+				return;
+			}
+			c1.attack();
+		} 
+		else if(player == 2) {
+			if(((CardMonstro)mesaJ2.getSelectedCard()).hasAttacked()) {
+				Erro("Essa carta já atacou");
+				return;
+			}
+			c2.attack();
+		}
+
 		if(c2.isDefending()) {
 			if(c1.getAtk() > c2.getDefense()) {  //Carta 1 com ataque maior que a defesa da carta 2
 				mesaJ2.removeSel();
@@ -190,6 +204,26 @@ public class Game {
 		}
 	}
 
+	public void useCardEffect() {
+		if(player == 1) {
+			if(mesaJ1.getSelectedCard().equals(null) || mesaJ2.isEmpty()) {
+				Erro("Sem carta selecionada ou a mesa do oponente está vazia");
+				return;
+			}
+			if(mesaJ1.getSelectedCard() instanceof CardEfeito && ((CardEfeito)mesaJ1.getSelectedCard()).hasEfeito()) {
+				((CardEfeito)mesaJ1.getSelectedCard()).useEffect();
+				mesaJ2.removeSel();
+				GameEvent gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.SHOWTABLE, "2");
+				for (var observer : observers) {
+					observer.notify(gameEvent);
+				}
+			}
+			if(mesaJ1.getSelectedCard() instanceof CardMagia && !(mesaJ2.isEmpty())) {
+
+			}
+		}
+	}
+
 	public void drawCards() {
 		if(player == 2)
 			deckJ2.drawCard();
@@ -226,11 +260,16 @@ public class Game {
 				mesaJ2.addCard(c);
 			}
 		}
+		GameEvent gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.SHOWTABLE, "2");
+		for (var observer : observers) {
+			observer.notify(gameEvent);
+		}
 	}
 
 	public void finalizarTurno() {
+		mesaJ1.resetCardsAttacks();
+		mesaJ2.resetCardsAttacks();
 		GameEvent gameEvent = null;
-		//if (player != 3) {return;};
 		if (vidasJ1 == 0 || vidasJ2 == 0) {
 			gameEvent = new GameEvent(this, GameEvent.Target.GWIN, GameEvent.Action.ENDGAME, "");
 			for (var observer : observers) {

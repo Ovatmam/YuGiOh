@@ -9,7 +9,11 @@ public class CardEfeito extends CardMonstro{
         efeito = true;
     }
 
-    public boolean getEfeito() {
+    public void useEffect() {
+        efeito = false;
+    }
+
+    public boolean hasEfeito() {
         return efeito;
     }
 }

@@ -80,6 +80,19 @@ public class CardDeck {
 		observers.add(listener);
 	}
 
+	public void resetCardsAttacks() {
+		for(Card c : cartas) {
+			if(c instanceof CardEfeito) {
+				CardEfeito ce = (CardEfeito) c;
+				ce.resetAttack();
+			}
+			else if(c instanceof CardMonstro) {
+				CardMonstro cm = (CardMonstro) c;
+				cm.resetAttack();
+			}
+		}
+	}
+
 	private void setCardStats(Card c) {
 		switch (c.getImageId()) {
 			case "img1":
